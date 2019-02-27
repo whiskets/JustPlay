@@ -1,0 +1,7 @@
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\bin\Debug\TestPlayerSnake.exe.config
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\bin\Debug\TestPlayerSnake.exe
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\bin\Debug\TestPlayerSnake.pdb
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.csprojAssemblyReference.cache
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.csproj.CoreCompileInputs.cache
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.exe
+E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.pdb
