@@ -5,3 +5,9 @@ E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.cspr
 E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.csproj.CoreCompileInputs.cache
 E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.exe
 E:\C#微软学习\TestPlayerSnake\TestPlayerSnake\obj\Debug\TestPlayerSnake.pdb
+F:\GithubUS\JustPlay\TestPlayerSnake\bin\Debug\TestPlayerSnake.exe.config
+F:\GithubUS\JustPlay\TestPlayerSnake\bin\Debug\TestPlayerSnake.exe
+F:\GithubUS\JustPlay\TestPlayerSnake\bin\Debug\TestPlayerSnake.pdb
+F:\GithubUS\JustPlay\TestPlayerSnake\obj\Debug\TestPlayerSnake.csproj.CoreCompileInputs.cache
+F:\GithubUS\JustPlay\TestPlayerSnake\obj\Debug\TestPlayerSnake.exe
+F:\GithubUS\JustPlay\TestPlayerSnake\obj\Debug\TestPlayerSnake.pdb

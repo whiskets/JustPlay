@@ -14,7 +14,8 @@ namespace TestPlayerSnake
         {
             public List<Point> SnakeBody = new List<Point>();//蛇的身体
             Forward Fangxiang,Toforward;//当前方向，将要方向
-            public int Speed = 50;
+            Point tail;
+            
             public enum Forward
             {
                 Up = 1,
@@ -31,6 +32,7 @@ namespace TestPlayerSnake
                 SnakeBody.Add(new Point(5, 5));
                 Fangxiang = Forward.Down;
                 Toforward = Forward.Down;
+                tail = SnakeBody[0];
             }
 
             public Forward GetFangxiang()
@@ -41,6 +43,7 @@ namespace TestPlayerSnake
             //自动前进
             public void AutoMove()
             {
+                tail= SnakeBody[0];
                 for (int i = 0; i < SnakeBody.Count - 1; i++)
                 {
                     SnakeBody[i] = new Point(SnakeBody[i + 1]);
@@ -62,6 +65,22 @@ namespace TestPlayerSnake
                         break;
                 }
                 Fangxiang = Toforward;
+            }
+            public void AddTail()//吃球后加上尾巴
+            {
+                SnakeBody.Insert(0, tail);
+            }
+
+            public bool IsDead()//判断死亡
+            {
+                for(int i=0;i<SnakeBody.Count-1;i++)
+                {
+                    if(SnakeBody[i].X== SnakeBody.Last().X&& SnakeBody[i].Y == SnakeBody.Last().Y)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             public bool ChangeForward(ConsoleKey key)
@@ -102,25 +121,7 @@ namespace TestPlayerSnake
 
         }
 
-        //坐标点
-        class Point
-        {
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-            public Point(Point point)
-            {
-                X = point.X;
-                Y = point.Y;
-            }
-            public int X { get; set; }
-            public int Y { get; set; }
-        }
-
-
-
+       
 
         public SnakeClass()
         {
@@ -131,8 +132,24 @@ namespace TestPlayerSnake
         bool IsEndGame = false;
         int RefreshTime;//刷新时间
         Snake snake = new Snake();
-        int Score = 0;
+        int score = 0;
+        int Speed = 800;
+        int level = 0;
 
+
+        int Score {
+            get { return score; }
+            set
+            {
+                score = value;
+                DrawBlock(30, 20, "                     ");
+                DrawBlock(30, 20, "Score：" + score);
+                if (score%5==0)
+                {
+                    MoreHarder();
+                }
+            }
+        }
         //Map
         int[,] Map = new int[10, 20];
         //初始化
@@ -159,69 +176,148 @@ namespace TestPlayerSnake
             }
         }
 
+        //判断是否吃球
+        bool EatBall(List<Point> SnakeBody,Point ball)
+        {
+            if(SnakeBody.Last().X==ball.X&&SnakeBody.Last().Y==ball.Y)
+            {
+                CreatNewBall(Map);
+                Score++;
+                return true;
+            }
+            return false;
+        }
+
         bool auto;
         //开始游戏主逻辑
         public void StartRun()
         {
+            foreach (var sn in snake.SnakeBody)//生成蛇的身体
+            {
+                Map[sn.X, sn.Y] = 2;
+            }
+            CreatNewBall(Map);//生成球
+            DrawBlock(30, 20, "Score："+score);
+
             while (!IsEndGame)
             {
-                if(Console.KeyAvailable)
+                //判断游戏结束?
+                if (Score > 80)
+                {
+                    //获胜
+                    DrawBlock(30, 0, "获胜");
+                    break;
+                }
+                if (snake.IsDead())
+                {
+                    DrawBlock(30, 0, "GAME OVER");
+                    break;
+                }
+
+                if (Console.KeyAvailable)//当键盘输入
                 {
                     var key = Console.ReadKey(true);
-                    bool yeah=snake.ChangeForward(key.Key);
-                    /*if (yeah)
-                    {
-                        RefreshTime = Environment.TickCount;
-                        Map[snake.SnakeBody[0].X, snake.SnakeBody[0].Y] = 0;
-                        snake.AutoMove();
-                    }*/
+                    bool yeah = snake.ChangeForward(key.Key);
                 }
-                //else
-                if(Environment.TickCount-RefreshTime> snake.Speed)
+
+                if (Environment.TickCount - RefreshTime > Speed)//蛇移动
                 {
                     RefreshTime = Environment.TickCount;
                     Map[snake.SnakeBody[0].X, snake.SnakeBody[0].Y] = 0;
                     snake.AutoMove();
+
+                    if (EatBall(snake.SnakeBody, ball))//判断移动后是否吃了球
+                    {
+                        snake.AddTail();
+                    }
                 }
 
-                foreach(var sn in snake.SnakeBody)
+                try
                 {
-                    Map[sn.X, sn.Y] = 2;                                   
+                    foreach (var sn in snake.SnakeBody)//刷新蛇位置
+                    {
+                        Map[sn.X, sn.Y] = 2;
+                    }
+                    Map[snake.SnakeBody[snake.SnakeBody.Count - 1].X, snake.SnakeBody[snake.SnakeBody.Count - 1].Y] = 4;
+                }
+                catch//当超出界限判断死亡
+                {
+                    DrawBlock(30, 0, "GAME OVER");
+                    break;
                 }
 
-                Map[snake.SnakeBody[snake.SnakeBody.Count-1].X, snake.SnakeBody[snake.SnakeBody.Count - 1].Y] = 4;
-                for (int i=0;i<10;i++)
+                for (int i=0;i<10;i++)//生成图像
                 {
                     for (int j = 0; j < 20; j++)
                     {
                         if (Map[i, j] == 2)
                         {
-                            DrawBlock(i * 2, j,"●");
+                            DrawBlock(i * 2, j,"●");//身体
                         }
                         else if (Map[i, j] == 1)
                         {
-                            DrawBlock(i * 2, j, "○");
+                            DrawBlock(i * 2, j, "○");//球
                         }
                         else if (Map[i, j] == 0)
                         {
-                            DrawBlock(i * 2, j, " ");
+                            DrawBlock(i * 2, j, " ");//空
                         }
-                        else if(Map[i, j] == 4)
+                        else if(Map[i, j] == 4)//蛇头
                         {
                             DrawBlock(i * 2, j, "◆");
                         }
                     }               
-                }
+                }             
             }
         }
 
-        //生成新的球
-        void CreatNewBall()
+        void MoreHarder()//增加难度
         {
+            level++;
+            DrawBlock(30, 10, "                     ");
+            DrawBlock(30, 10, "LEVEL：" + level);
+            switch (level)
+            {
+                case 1:
+                    Speed = 600;
+                    break;
+                case 2:
+                    Speed = 400;
+                    break;
+                case 3:
+                    Speed = 300;
+                    break;
+                case 4:
+                    Speed = 200;
+                    break;
+                case 5:
+                    Speed = 100;
+                    break;
+                case 6:
+                    Speed = 50;
+                    break;
+            }
+
+        }
+
+        Point ball;
+        //生成新的球
+        void CreatNewBall(int[,] map)
+        {
+            List<Point> list = new List<Point>();//在剩余的空格中随机生成一个球
+            for(int i=0;i<map.GetLength(0);i++)
+            {
+                for(int j=0;j<map.GetLength(1);j++)
+                {
+                    if(map[i,j]==0)
+                    {
+                        list.Add(new Point(i, j));
+                    }
+                }
+            }
             Random rand = new Random();
-            int x = rand.Next(0, 11);
-            int y = rand.Next(0, 11);
-            Point ball = new Point(x,y);
+            ball = list[rand.Next(list.Count)];
+            map[ball.X, ball.Y] = 1;
         }
 
         void MoveMouse(int x,int y)
